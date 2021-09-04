@@ -75,8 +75,9 @@ router.get('/profile/edit', routeGuard, (req, res, next) => {
 
 router.post('/profile/edit', routeGuard, (req, res, next) => {
   const name = req.body.name;
-
-  User.findByIdAndUpdate({ id }, { name })
+  const id = req.user.id;
+  console.log('id', id);
+  User.findByIdAndUpdate({ _id: id }, { name })
     .then(() => {
       res.redirect('/profile');
     })
