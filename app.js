@@ -7,7 +7,7 @@ const serveFavicon = require('serve-favicon');
 const expressSession = require('express-session');
 const MongoStore = require('connect-mongo');
 const indexRouter = require('./routes/index');
-
+const userDeserializer = require('./middleware/user-deserializer');
 const app = express();
 
 // Setup view engine
@@ -44,6 +44,8 @@ app.use(
   })
 );
 
+app.use(userDeserializer);
+
 app.use('/', indexRouter);
 
 // Catch missing routes and forward to error handler
@@ -53,12 +55,11 @@ app.use((req, res, next) => {
 
 // Catch all error handler
 app.use((error, req, res, next) => {
-  // Set error information, with stack only available in development
-  res.locals.message = error.message;
-  res.locals.error = req.app.get('env') === 'development' ? error : {};
-
   res.status(error.status || 500);
-  res.render('error');
+  res.render('error', {
+    message: error.message,
+    error: req.app.get('env') === 'development' ? error : {}
+  });
 });
 
 module.exports = app;

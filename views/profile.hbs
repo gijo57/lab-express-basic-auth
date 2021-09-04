@@ -1,0 +1,11 @@
+<h1>Hi, {{user.username}}</h1>
+<p>User ID: {{user.id}}</p>
+<p>Name: {{user.name}}</p>
+<form action='/profile/edit'><button>Edit profile</button></form>
+{{#if form}}
+  <form method='POST' action='/profile/edit'>
+    <label for='name'>Name</label>
+    <input id='name' name='name' type='text' placeholder='Name' />
+    <button>Save</button>
+  </form>
+{{/if}}

@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const routeGuard = require('../middleware/route-guard');
 const router = Router();
 
 router.get('/', (req, res, next) => {
@@ -15,12 +16,16 @@ router.get('/login', (req, res, next) => {
   res.render('login');
 });
 
-router.get('/main', (req, res, next) => {
+router.get('/main', routeGuard, (req, res, next) => {
   res.render('main');
 });
 
-router.get('/private', (req, res, next) => {
+router.get('/private', routeGuard, (req, res, next) => {
   res.render('private');
+});
+
+router.get('/profile', routeGuard, (req, res, next) => {
+  res.render('profile');
 });
 
 router.post('/register', (req, res, next) => {
@@ -62,6 +67,25 @@ router.post('/login', (req, res, next) => {
       }
     })
     .catch((err) => next(err));
+});
+
+router.get('/profile/edit', routeGuard, (req, res, next) => {
+  res.render('profile', { form: true });
+});
+
+router.post('/profile/edit', routeGuard, (req, res, next) => {
+  const name = req.body.name;
+
+  User.findByIdAndUpdate({ id }, { name })
+    .then(() => {
+      res.redirect('/profile');
+    })
+    .catch((err) => next(err));
+});
+
+router.post('/logout', (req, res, next) => {
+  req.session.destroy();
+  res.redirect('/');
 });
 
 module.exports = router;

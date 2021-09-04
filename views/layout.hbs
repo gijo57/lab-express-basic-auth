@@ -6,9 +6,15 @@
   <body>
     <nav>
       <a href='/'>Home</a>
-      <a href='/register'>Register</a>
-      <a href='/login'>Log In</a>
-      <a href='/'>Log Out</a>
+      {{#if user}}
+        <a href='/profile'>Profile</a>
+        <form method='POST' action='/logout'>
+          <button type='submit'>Log Out</button>
+        </form>
+      {{else}}
+        <a href='/register'>Register</a>
+        <a href='/login'>Log In</a>
+      {{/if}}
     </nav>
     {{{body}}}
   </body>
